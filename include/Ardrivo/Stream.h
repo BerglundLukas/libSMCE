@@ -58,6 +58,8 @@ class SMCE__DLL_RT_API Stream : public Print {
     long parseInt(LookaheadMode lookahead = SKIP_ALL, char ignore = NO_IGNORE_CHAR);
     float parseFloat(LookaheadMode lookahead = SKIP_ALL, char ignore = NO_IGNORE_CHAR);
     void setTimeout(long time);
+
+    static int checkWhitespace(int c);
 };
 
 #endif // Stream_h

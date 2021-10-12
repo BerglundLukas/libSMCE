@@ -34,6 +34,18 @@ bool Stream::findUntil(const char* target, int length, char terminal) noexcept {
     }
     return false;
 }
+int Stream::checkWhitespace(int c){
+    switch (c) {
+    case ' ':
+    case '\t':
+    case '\r':
+    case '\n':
+        break;
+    default:
+        return -1;
+    }
+    return 0;
+}
 
 int Stream::peekNextDigit(LookaheadMode lookahead, bool detectDecimal) {
     int c;
@@ -47,15 +59,7 @@ int Stream::peekNextDigit(LookaheadMode lookahead, bool detectDecimal) {
         case SKIP_NONE:
             return -1;
         case SKIP_WHITESPACE:
-            switch (c) {
-            case ' ':
-            case '\t':
-            case '\r':
-            case '\n':
-                break;
-            default:
-                return -1;
-            }
+            checkWhitespace(c);
         case SKIP_ALL:
             break;
         }

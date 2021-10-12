@@ -25,15 +25,8 @@ namespace smce {
 
 BoardDeviceView::BoardDeviceView(BoardView& bv) noexcept : m_bdat{bv.m_bdat} {}
 
-[[nodiscard]] smce_rt::BoardDeviceAllocationPtrBases BoardDeviceView::getBases(std::string_view dev_name) {
-    smce_rt::BoardDeviceAllocationPtrBases ret{};
-    if (!m_bdat)
-        return ret;
-    const auto it = std::lower_bound(m_bdat->device_allocation_map.begin(), m_bdat->device_allocation_map.end(),
-                                     dev_name, [](const auto& p, std::string_view sv) {
-                                         return std::string_view{p.first.c_str(), p.first.size()} < sv;
-                                     });
-    const auto& rel_bases = it->second;
+smce_rt::BoardDeviceAllocationPtrBases BoardDeviceView::allocateMemory(smce_rt::BoardDeviceAllocationPtrBases ret, const auto& rel_bases){
+
     ret.count = rel_bases.count;
     ret.r8 = m_bdat->raw_bank.data() + rel_bases.r8;
     ret.r16 = m_bdat->raw_bank.data() + rel_bases.r16;
@@ -44,7 +37,21 @@ BoardDeviceView::BoardDeviceView(BoardView& bv) noexcept : m_bdat{bv.m_bdat} {}
     ret.a32 = m_bdat->a32_bank.data() + rel_bases.a32;
     ret.a64 = m_bdat->a64_bank.data() + rel_bases.a64;
     ret.mtx = m_bdat->mtx_bank.data() + rel_bases.mtx;
+
     return ret;
+}
+
+[[nodiscard]] smce_rt::BoardDeviceAllocationPtrBases BoardDeviceView::getBases(std::string_view dev_name) {
+    smce_rt::BoardDeviceAllocationPtrBases ret{};
+    if (!m_bdat)
+        return ret;
+    const auto it = std::lower_bound(m_bdat->device_allocation_map.begin(), m_bdat->device_allocation_map.end(),
+                                     dev_name, [](const auto& p, std::string_view sv) {
+                                         return std::string_view{p.first.c_str(), p.first.size()} < sv;
+                                     });
+
+    const auto& rel_bases = it->second;
+    return allocateMemory(ret, rel_bases);
 }
 
 } // namespace smce

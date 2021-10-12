@@ -25,6 +25,10 @@
 #include "SMCE/fwd.hpp"
 #include "SMCE_rt/internal/BoardDeviceAllocationBases.hpp"
 
+#include "SMCE/BoardView.hpp"
+#include "SMCE/internal/BoardData.hpp"
+#include "SMCE/internal/BoardDeviceView.hpp"
+
 namespace smce {
 
 /// \internal
@@ -38,6 +42,8 @@ class SMCE_API BoardDeviceView {
 
     /// Object validity check
     [[nodiscard]] bool valid() noexcept { return m_bdat; }
+
+    smce_rt::BoardDeviceAllocationPtrBases allocateMemory(smce_rt::BoardDeviceAllocationPtrBases, const auto&);
 };
 
 } // namespace smce
