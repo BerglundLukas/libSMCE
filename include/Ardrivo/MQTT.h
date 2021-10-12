@@ -30,6 +30,7 @@
 #include "WString.h"
 
 class MQTTClient;
+//class publishVariableClass;
 
 using MQTTClientCallbackSimple = void (*)(String& topic, String& payload);
 using MQTTClientCallbackAdvanced = void (*)(MQTTClient* client, const char* topic, const char* bytes, int length);
@@ -69,6 +70,7 @@ class SMCE__DLL_RT_API MQTTClient {
     MQTTClientCallbacks m_callbacks{this};
 
   public:
+
     explicit MQTTClient(int bufSize = 128);
 
     ~MQTTClient();
@@ -128,14 +130,40 @@ class SMCE__DLL_RT_API MQTTClient {
     inline bool publish(const char* topic, const String& payload, bool retained, int qos) {
         return this->publish(topic, payload.c_str(), retained, qos);
     }
+
+    class publishVariableClass{
+      public:
+        const char* topic;
+        const char* payload;
+        int length;
+        bool retained;
+        int qos;
+    };
+
     inline bool publish(const char* topic, const char* payload = "", bool retained = false, int qos = 0) {
-        return this->publish(topic, payload, (int)std::strlen(payload), retained, qos);
+        publishVariableClass myClass;
+
+        myClass.topic = topic;
+        myClass.payload = payload;
+        myClass.length = (int)std::strlen(payload);
+        myClass.retained = retained;
+        myClass.qos = qos;
+        return this->publish(myClass);
     }
     inline bool publish(const char* topic, const char* payload, int length) {
-        return this->publish(topic, payload, length, false, 0);
-    }
-    bool publish(const char* topic, const char* payload, int length, bool retained, int qos);
+        publishVariableClass myClass;
 
+        myClass.topic = topic;
+        myClass.payload = payload;
+        myClass.length = length;
+        myClass.retained = false;
+        myClass.qos = 0;
+        return this->publish(myClass);
+    }
+
+    // This
+    //bool publish(const char* topic, const char* payload, int length, bool retained, int qos);
+    bool publish(publishVariableClass);
     inline bool subscribe(const String& topic, int qos = 0) { return this->subscribe(topic.c_str(), qos); }
     bool subscribe(const char* topic, int qos = 0);
 
@@ -147,5 +175,7 @@ class SMCE__DLL_RT_API MQTTClient {
 
     bool disconnect();
 };
+
+
 
 #endif // MQTT_H
