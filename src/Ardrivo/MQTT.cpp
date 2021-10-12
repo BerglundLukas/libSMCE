@@ -117,7 +117,7 @@ bool MQTTClient::connect(const char* clientID, const char* username, const char*
     return false;
 }
 
-bool MQTTClient::publish(const publishVariableClass myClass) {
+bool MQTTClient::publish(publishVariableClass const & myClass) {
     return ::mosquitto_publish(static_cast<Mosquitto*>(m_client), nullptr, myClass.topic,
                                myClass.length, myClass.payload, myClass.qos, myClass.retained) == MOSQ_ERR_SUCCESS;
 }

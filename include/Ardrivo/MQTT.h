@@ -160,7 +160,7 @@ class SMCE__DLL_RT_API MQTTClient {
         return this->publish(myClass);
     }
 
-    bool publish(publishVariableClass);
+    bool publish(publishVariableClass const &);
     inline bool subscribe(const String& topic, int qos = 0) { return this->subscribe(topic.c_str(), qos); }
     bool subscribe(const char* topic, int qos = 0);
 
